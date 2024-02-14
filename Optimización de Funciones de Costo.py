@@ -3,14 +3,14 @@ import torch
 # Datos iniciales
 PrecioGasolinaPorLitro = 20 # Precio por litro de gasolina
 CapacidadTanqueL = 40  # Capacidad del tanque en litros
-DistanciaarecorrerKM = 400  # Distancia que queremos recorrer en kilómetros
 
 # Función de costo (costo total)
 def CostoTotal(CantidadGasolinaLitros):
     """
     Calcula el costo total de llenar el tanque con una cantidad dada de gasolina.
     """
-    return CantidadGasolinaLitros * PrecioGasolinaPorLitro
+    return CantidadGasolinaLitros * PrecioGasolinaPorLitro 
+
 
 # Descenso de gradiente
 def gradient_descent():
