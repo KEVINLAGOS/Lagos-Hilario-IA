@@ -31,5 +31,5 @@ def gradient_descent():
 CantidadOptimaGasolina = gradient_descent()
 costo_optimo = CostoTotal(CantidadOptimaGasolina)
 
-print(f"La cantidad óptima de gasolina es aproximadamente {CantidadOptimaGasolina:.2f} litros.")
-print(f"El costo total óptimo es de ${costo_optimo:.2f}.")
+print(f"La cantidad optima de gasolina es aproximadamente {CantidadOptimaGasolina:.2f} litros.")
+print(f"El costo total optimo es de ${costo_optimo:.2f}.")
