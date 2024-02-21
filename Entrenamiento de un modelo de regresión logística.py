@@ -1,44 +1,30 @@
-# Importar las bibliotecas necesarias
 import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 
-# valores de características
-suscriptores = [1200, 800, 1500, 2000, 600]
-duracion_promedio = [12, 8, 10, 15, 6]
-frecuencia_publicacion = [2, 1, 3, 4, 1]
+# Cargar los datos desde el archivo CSV
+data = pd.read_csv(r'C:\Users\KEVII\Desktop\IA\Lagos-Hilario-IA\spotify-2023.csv', encoding='latin1')
 
-# Variable objetivo (0 para "no ver" y 1 para "ver")
-ver_canal_youtube = [1, 0, 1, 1, 0]
+# Eliminar filas con valores faltantes si es necesario
+data.dropna(inplace=True)
 
-# Crear un DataFrame con los valores y nombres de características
-data = pd.DataFrame({
-    'Suscriptores': suscriptores,
-    'Duración Promedio': duracion_promedio,
-    'Frecuencia de Publicación': frecuencia_publicacion,
-    'Ver Canal YouTube': ver_canal_youtube
-})
+# Definir qué significa "novedoso"
+data['novedoso'] = (data['energy_%'] > 70) & (data['acousticness_%'] < 30) & (data['instrumentalness_%'] < 20)
 
-# Dividir  los datos en conjuntos de entrenamiento y prueba
-X = data[['Suscriptores', 'Duración Promedio', 'Frecuencia de Publicación']]
-y = data['Ver Canal YouTube']
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Seleccionar las características relevantes y la variable objetivo
+X = data[['energy_%', 'acousticness_%', 'instrumentalness_%']]
+y = data['novedoso']
 
-# Crear una instancia del modelo de regresión logística
+# Normalizar las características
+scaler = MinMaxScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Crear y entrenar el modelo de regresión logística
 model = LogisticRegression()
+model.fit(X_scaled, y)
 
-# Entrenar el modelo con los datos de entrenamiento
-model.fit(X_train, y_train)
-
-# Realizar predicciones en el conjunto de prueba
-y_pred = model.predict(X_test)
-
-# Calcular la precisión del modelo
-accuracy = accuracy_score(y_test, y_pred)
-print(f'Precisión del modelo: {accuracy:.2f}')
-# Ejemplo [1000 suscriptores, 10 minutos de duración promedio, 3 videos por semana]
-new_channel = np.array([[1000, 10, 3]])
-probabilities = model.predict_proba(new_channel)
-print(f'Probabilidad de ver el nuevo canal: {probabilities[0][1]:.2f}')
+# Calcular la probabilidad de que una canción de un nuevo artista sea novedosa
+nueva_cancion = [[100, 25, 15]]  # Características de la nueva canción
+nueva_cancion_scaled = scaler.transform(nueva_cancion)
+probabilidad_novedad = model.predict_proba(nueva_cancion_scaled)
+print("Probabilidad de que la nueva cancion sea considerada novedosa:", probabilidad_novedad[0][1])
